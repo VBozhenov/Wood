@@ -9,11 +9,11 @@ import Foundation
 
 struct Magazine: Codable {
     let id: String
-    let title: String
-    let issues: [Issue]
+    let title: String?
+    let issues: [Issue]?
     
     func createMagazine() -> CreateMagazine {
-        CreateMagazine(title: title)
+        CreateMagazine(title: title ?? "Unknown title")
     }
 }
 

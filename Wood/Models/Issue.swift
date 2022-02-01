@@ -12,7 +12,7 @@ struct Issue: Codable {
     let title: String
     let year: Int
     let magazine: Magazine
-    let articles: [Article]
+    let articles: [Article]?
     
     func createIssue() -> CreateIssue {
         CreateIssue(title: title, year: year, magazineID: magazine.id)

@@ -13,6 +13,5 @@ class MainPresenter {
     func startButtonPressed() {
         guard let mainViewController = mainViewController else { return }
         mainViewController.delegate?.mainViewControllerDidPressStart(mainViewController)
-        print("Start")
     }
 }
