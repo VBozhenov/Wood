@@ -8,13 +8,16 @@ import UIKit
 
 class AppDelegateRouter: Router {
     let window: UIWindow
+    var navigationController: UINavigationController
     
-    init(window: UIWindow) {
+    init(window: UIWindow, navigationController: UINavigationController) {
         self.window = window
+        self.navigationController = navigationController
     }
     
     func present(_ viewController: UIViewController, animated: Bool, onDismissed: (() -> Void)?) {
-        window.rootViewController = viewController
+        window.rootViewController = navigationController
+        navigationController.pushViewController(viewController, animated: animated)
         window.makeKeyAndVisible()
     }
     

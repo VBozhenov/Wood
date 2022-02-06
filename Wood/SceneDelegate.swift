@@ -15,7 +15,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
         guard let window = window else { return }
-        let router = AppDelegateRouter(window: window)
+        let navigationController = UINavigationController()
+        let router = AppDelegateRouter(window: window, navigationController: navigationController)
         let coordinator = MainCoordinator(router: router)
         coordinator.present(animated: true, onDismissed: nil)
     }

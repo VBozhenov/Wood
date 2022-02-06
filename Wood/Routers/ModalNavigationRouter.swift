@@ -11,12 +11,13 @@ class ModalNavigationRouter: NSObject {
     // MARK: - Instance Properties
     unowned let parentViewController: UIViewController
     
-    private let navigationController = UINavigationController()
+    var navigationController: UINavigationController
     private var onDismissForViewController: [UIViewController: (() -> Void)] = [:]
     
     // MARK: - Object Lifecycle
-    init(parentViewController: UIViewController) {
+    init(navigationController: UINavigationController, parentViewController: UIViewController) {
         self.parentViewController = parentViewController
+        self.navigationController = navigationController
         super.init()
         navigationController.delegate = self
     }

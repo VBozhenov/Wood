@@ -1,5 +1,5 @@
 //
-//  ListViewController.swift
+//  ListItemViewController.swift
 //  Wood
 //
 //  Created by Vladimir Bozhenov on 01.02.2022.
@@ -7,26 +7,32 @@
 
 import UIKit
 
-protocol ListViewControllerDelegate: AnyObject {
+protocol ListItemViewControllerDelegate: AnyObject {
 //    func listViewControllerDidPressAdd(_ viewController: ListViewController)
-//    func listViewController<T>(_ viewController: ListViewController, didSelectEdit: T)
+//    func listViewController<T>(_ viewController: ListViewController, didSelectForEdit item: T)
 //    func listViewController<T>(_ viewController: ListViewController, didSelect item: T)
 }
 
-class ListViewController: UIViewController {
-    var presenter: ListPresenter?
-    var delegate: ListViewControllerDelegate?
+class ListItemViewController: UIViewController {
+    var presenter: ListItemPresenter?
+    var delegate: ListItemViewControllerDelegate?
     
     let tableView: UITableView = {
         let tableView = UITableView()
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ItemCell")
         return tableView
     }()
     
-    init(presenter: ListPresenter, delegate: ListViewControllerDelegate) {
+    let addButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(systemItem: .add)
+        return button
+    }()
+    
+    init(presenter: ListItemPresenter, delegate: ListItemViewControllerDelegate) {
         super.init(nibName: nil, bundle: nil)
         self.presenter = presenter
         self.delegate = delegate
-        presenter.listViewController = self
+        self.presenter?.listItemViewController = self
     }
     
     required init?(coder: NSCoder) {
@@ -45,24 +51,21 @@ class ListViewController: UIViewController {
         presenter?.refresh()
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        presenter?.viewIsReady()
+    }
+    
     private func configureView() {
+        navigationItem.rightBarButtonItem = addButton
+        
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "ItemCell")
         
         NSLayoutConstraint.activate([
             tableView.widthAnchor.constraint(equalTo: view.widthAnchor),
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .add,
-            target: self,
-            action: #selector(addMagazine))
-    }
-    
-    @objc private func addMagazine() {
-        presenter?.addButtonPressed()
     }
 }

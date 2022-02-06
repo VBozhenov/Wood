@@ -8,6 +8,8 @@
 import UIKit
 
 protocol Router: AnyObject {
+    var navigationController: UINavigationController { get set }
+    
     func present(_ viewController: UIViewController, animated: Bool)
     func present(_ viewController: UIViewController, animated: Bool, onDismissed: (() -> Void)?)
     func pop(animated: Bool)

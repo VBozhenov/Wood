@@ -25,7 +25,9 @@ class MainCoordinator: Coordinator {
 // MARK: - MainViewControllerDelegate
 extension MainCoordinator: MainViewControllerDelegate {
     func mainViewControllerDidPressStart(_ viewController: MainViewController) {
-        let router = ModalNavigationRouter(parentViewController: viewController)
+        let router = ModalNavigationRouter(
+            navigationController: viewController.navigationController ?? UINavigationController(rootViewController: viewController),
+            parentViewController: viewController)
         let coordinator = MagazinesCoordinator(router: router)
         presentChild(coordinator, animated: true)
     }

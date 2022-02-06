@@ -17,13 +17,13 @@ class MagazinesCoordinator: Coordinator {
     
     func present(animated: Bool, onDismissed: (() -> Void)?) {
         let presenter = MagazinesPresenter()
-        let viewController = ListViewController(presenter: presenter, delegate: self)
+        let viewController = ListItemViewController(presenter: presenter, delegate: self)
         router.present(viewController, animated: animated, onDismissed: onDismissed)
     }
 }
 
-// MARK: - ListViewControllerDelegate
-extension MagazinesCoordinator: ListViewControllerDelegate {
+// MARK: - ListItemViewControllerDelegate
+extension MagazinesCoordinator: ListItemViewControllerDelegate {
 //    func magazinesViewControllerDidPressAdd(_ viewController: MagazinesViewController) {
 //        let presenter = AddMagazinePresenter()
 //        let viewController = AddMagazineViewController(presenter: presenter, delegate: self)

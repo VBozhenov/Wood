@@ -6,12 +6,19 @@
 //
 
 import UIKit
+import RxSwift
 
 class MainPresenter {
     weak var mainViewController: MainViewController?
+    private var disposeBag = DisposeBag()
     
-    func startButtonPressed() {
-        guard let mainViewController = mainViewController else { return }
-        mainViewController.delegate?.mainViewControllerDidPressStart(mainViewController)
+    func viewIsReady() {
+        mainViewController?.startButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self,
+                      let mainViewController = self.mainViewController else { return }
+                mainViewController.delegate?.mainViewControllerDidPressStart(mainViewController)
+            })
+            .disposed(by: disposeBag)
     }
 }

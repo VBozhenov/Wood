@@ -15,13 +15,12 @@ class MainViewController: UIViewController {
     var presenter: MainPresenter?
     var delegate: MainViewControllerDelegate?
     
-    private lazy var startButton: UIButton = {
+    var startButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(hexValue: "#335B96", alpha: 1)
         button.setTitle("Start", for: .normal)
         button.setTitleColor(UIColor(hexValue: "#966F33", alpha: 1), for: .normal)
         button.layer.cornerRadius = 16
-        button.addTarget(self, action: #selector(startAction), for: .touchUpInside)
         return button
     }()
     
@@ -41,6 +40,11 @@ class MainViewController: UIViewController {
         configureView()
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        presenter?.viewIsReady()
+    }
+    
     private func configureView() {
         view.backgroundColor = UIColor(hexValue: "#966F33", alpha: 1)
 
@@ -53,9 +57,5 @@ class MainViewController: UIViewController {
             startButton.heightAnchor.constraint(equalToConstant: 32),
             startButton.widthAnchor.constraint(equalToConstant: 128)
         ])
-    }
-    
-    @objc private func startAction() {
-        presenter?.startButtonPressed()
     }
 }
