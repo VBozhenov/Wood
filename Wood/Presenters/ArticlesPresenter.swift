@@ -63,25 +63,25 @@ class ArticlesPresenter: NSObject, ListItemPresenter {
             .disposed(by: disposeBag)
     }
     
-//    private func deleteEvent(at index: Int) {
-//        let issueID = self.issues.value[index].id
-//        let urlString = self.urlString.appending(issueID)
-//        WoodAPIService.deleteEvent(urlString: urlString)
-//            .subscribe(onCompleted: { [weak self] in
-//                guard let self = self else { return }
-//                var issues = self.issues.value
-//                issues.remove(at: index)
-//                self.issues.accept(issues)
-//            }, onError: { [weak self] error in
-//                guard let self = self else { return }
-//                DispatchQueue.main.async {
-//                    self.listItemViewController?.alert(title: "Error", text: error.localizedDescription)
-//                        .subscribe()
-//                        .disposed(by: self.disposeBag)
-//                }
-//            })
-//            .disposed(by: self.disposeBag)
-//    }
+    private func deleteEvent(at index: Int) {
+        let articleID = self.articles.value[index].id
+        let urlString = self.urlString.appending(articleID)
+        WoodAPIService.deleteEvent(urlString: urlString)
+            .subscribe(onCompleted: { [weak self] in
+                guard let self = self else { return }
+                var articles = self.articles.value
+                articles.remove(at: index)
+                self.articles.accept(articles)
+            }, onError: { [weak self] error in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.listItemViewController?.alert(title: "Error", text: error.localizedDescription)
+                        .subscribe()
+                        .disposed(by: self.disposeBag)
+                }
+            })
+            .disposed(by: self.disposeBag)
+    }
 }
 
 // MARK: - UITableViewDelegate
@@ -95,7 +95,7 @@ extension ArticlesPresenter: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completionHandler in
             guard let self = self else { return }
-//            self.deleteEvent(at: indexPath.row)
+            self.deleteEvent(at: indexPath.row)
             completionHandler(true)
         }
         deleteAction.image = UIImage(systemName: "trash")
