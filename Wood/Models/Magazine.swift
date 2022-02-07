@@ -13,10 +13,10 @@ struct Magazine: Codable {
     let issues: [Issue]?
     
     func createMagazine() -> CreateMagazine {
-        CreateMagazine(title: title ?? "Unknown title")
+        CreateMagazine(title: title)
     }
 }
 
 struct CreateMagazine: Codable {
-    let title: String
+    let title: String?
 }

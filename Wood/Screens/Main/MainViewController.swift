@@ -15,14 +15,7 @@ class MainViewController: UIViewController {
     var presenter: MainPresenter?
     var delegate: MainViewControllerDelegate?
     
-    var startButton: UIButton = {
-        let button = UIButton()
-        button.backgroundColor = UIColor(hexValue: "#335B96", alpha: 1)
-        button.setTitle("Start", for: .normal)
-        button.setTitleColor(UIColor(hexValue: "#966F33", alpha: 1), for: .normal)
-        button.layer.cornerRadius = 16
-        return button
-    }()
+    let startButton = UIButton()
     
     init(presenter: MainPresenter, delegate: MainViewControllerDelegate) {
         super.init(nibName: nil, bundle: nil)
@@ -49,6 +42,10 @@ class MainViewController: UIViewController {
         view.backgroundColor = UIColor(hexValue: "#966F33", alpha: 1)
 
         view.addSubview(startButton)
+        startButton.backgroundColor = UIColor(hexValue: "#335B96", alpha: 1)
+        startButton.setTitle("Start", for: .normal)
+        startButton.setTitleColor(UIColor(hexValue: "#966F33", alpha: 1), for: .normal)
+        startButton.layer.cornerRadius = 16
         startButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([

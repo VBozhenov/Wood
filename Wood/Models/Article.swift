@@ -9,19 +9,19 @@ import Foundation
 
 struct Article: Codable {
     let id: String
-    let title: String
-    let page: Int
+    let title: String?
+    let page: Int?
     let description: String?
-    let issue: Issue
+    let issue: Issue?
     
     func createArticle() -> CreateArticle {
-        CreateArticle(title: title, page: page, description: description, issueID: issue.id)
+        CreateArticle(title: title, page: page, description: description, issueID: issue?.id)
     }
 }
 
 struct CreateArticle: Codable {
-    let title: String
-    let page: Int
+    let title: String?
+    let page: Int?
     let description: String?
-    let issueID: String
+    let issueID: String?
 }

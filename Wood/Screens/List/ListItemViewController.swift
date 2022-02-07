@@ -10,7 +10,7 @@ import UIKit
 protocol ListItemViewControllerDelegate: AnyObject {
 //    func listViewControllerDidPressAdd(_ viewController: ListViewController)
 //    func listViewController<T>(_ viewController: ListViewController, didSelectForEdit item: T)
-//    func listViewController<T>(_ viewController: ListViewController, didSelect item: T)
+    func listViewController<T>(_ viewController: ListItemViewController, didSelect item: T)
 }
 
 class ListItemViewController: UIViewController {

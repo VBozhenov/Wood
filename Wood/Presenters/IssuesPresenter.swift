@@ -1,31 +1,36 @@
 //
-//  MagazinesPresenter.swift
+//  IssuesPresenter.swift
 //  Wood
 //
-//  Created by Vladimir Bozhenov on 24.01.2022.
+//  Created by Vladimir Bozhenov on 07.02.2022.
 //
 
 import UIKit
 import RxSwift
 import RxCocoa
 
-class MagazinesPresenter: NSObject, ListItemPresenter {
+class IssuesPresenter: NSObject, ListItemPresenter {
+    let magazine: Magazine
     private let disposeBag = DisposeBag()
-    private let urlString = "http://127.0.0.1:8080/api/magazines/"
-    private let magazines = BehaviorRelay<[Magazine]>(value: [])
+    private let urlString = "http://127.0.0.1:8080/api/issues/"
+    private let issues = BehaviorRelay<[Issue]>(value: [])
     weak var listItemViewController: ListItemViewController?
     
+    init(magazine: Magazine) {
+        self.magazine = magazine
+    }
+    
     func refresh() {
-        magazines.accept([])
+        issues.accept([])
         DispatchQueue.global(qos: .default).async { [weak self] in
             guard let self = self else { return }
-            let urlString = self.urlString.appending("all/")
+            let urlString = self.urlString.appending("\(self.magazine.id)/")
             self.fetchEvents(urlString: urlString)
         }
     }
     
     func viewIsReady() {
-        listItemViewController?.title = "Magazines"
+        listItemViewController?.title = "\(self.magazine.title ?? "Unknown magazine")"
         
         listItemViewController?.addButton.rx.tap
             .subscribe(onNext: { [weak self] in
@@ -34,7 +39,7 @@ class MagazinesPresenter: NSObject, ListItemPresenter {
             })
             .disposed(by: disposeBag)
         
-        magazines
+        issues
             .asObservable()
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
@@ -54,43 +59,43 @@ class MagazinesPresenter: NSObject, ListItemPresenter {
     private func fetchEvents(urlString: String) {
         WoodAPIService.getEvents(urlString: urlString)
             .catchErrorJustReturn([])
-            .bind(to: magazines)
+            .bind(to: issues)
             .disposed(by: disposeBag)
     }
     
-    private func deleteEvent(at index: Int) {
-        let magazineID = self.magazines.value[index].id
-        let urlString = self.urlString.appending(magazineID)
-        WoodAPIService.deleteEvent(urlString: urlString)
-            .subscribe(onCompleted: { [weak self] in
-                guard let self = self else { return }
-                var magazines = self.magazines.value
-                magazines.remove(at: index)
-                self.magazines.accept(magazines)
-            }, onError: { [weak self] error in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.listItemViewController?.alert(title: "Error", text: error.localizedDescription)
-                        .subscribe()
-                        .disposed(by: self.disposeBag)
-                }
-            })
-            .disposed(by: self.disposeBag)
-    }
+//    private func deleteEvent(at index: Int) {
+//        let issueID = self.issues.value[index].id
+//        let urlString = self.urlString.appending(issueID)
+//        WoodAPIService.deleteEvent(urlString: urlString)
+//            .subscribe(onCompleted: { [weak self] in
+//                guard let self = self else { return }
+//                var issues = self.issues.value
+//                issues.remove(at: index)
+//                self.issues.accept(issues)
+//            }, onError: { [weak self] error in
+//                guard let self = self else { return }
+//                DispatchQueue.main.async {
+//                    self.listItemViewController?.alert(title: "Error", text: error.localizedDescription)
+//                        .subscribe()
+//                        .disposed(by: self.disposeBag)
+//                }
+//            })
+//            .disposed(by: self.disposeBag)
+//    }
 }
 
 // MARK: - UITableViewDelegate
-extension MagazinesPresenter: UITableViewDelegate {
+extension IssuesPresenter: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let magazine = magazines.value[indexPath.row]
+        let issue = issues.value[indexPath.row]
         guard let listItemViewController = listItemViewController else { return }
-        listItemViewController.delegate?.listViewController(listItemViewController, didSelect: magazine)
+        listItemViewController.delegate?.listViewController(listItemViewController, didSelect: issue)
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { [weak self] _, _, completionHandler in
             guard let self = self else { return }
-            self.deleteEvent(at: indexPath.row)
+//            self.deleteEvent(at: indexPath.row)
             completionHandler(true)
         }
         deleteAction.image = UIImage(systemName: "trash")
@@ -110,18 +115,18 @@ extension MagazinesPresenter: UITableViewDelegate {
 }
 
 // MARK: - UITableViewDataSource
-extension MagazinesPresenter: UITableViewDataSource {
+extension IssuesPresenter: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        magazines.value.count
+        issues.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let magazine = magazines.value[indexPath.row]
+        let issue = issues.value[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell", for: indexPath)
         var content = cell.defaultContentConfiguration()
-        content.text = magazine.title
-        content.secondaryText = "Issues: \(magazine.issues?.count ?? 0)"
+        content.text = issue.title
+        content.secondaryText = "Articles: \(issue.articles?.count ?? 0)"
         cell.accessoryType = .disclosureIndicator
         cell.contentConfiguration = content
         return cell

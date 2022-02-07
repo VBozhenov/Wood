@@ -24,6 +24,23 @@ class MagazinesCoordinator: Coordinator {
 
 // MARK: - ListItemViewControllerDelegate
 extension MagazinesCoordinator: ListItemViewControllerDelegate {
+    func listViewController<T>(_ viewController: ListItemViewController, didSelect item: T) {
+        //        guard let item = item as? Magazine else { return }
+        let presenter: ListItemPresenter
+        switch item.self {
+        case is Magazine:
+            guard let item = item as? Magazine else { return }
+            presenter = IssuesPresenter(magazine: item)
+        case is Issue:
+            guard let item = item as? Issue else { return }
+            presenter = ArticlesPresenter(issue: item)
+        default: return
+            //        let presenter = IssuesPresenter(magazine: item)
+        }
+        let viewController = ListItemViewController(presenter: presenter, delegate: self)
+        router.present(viewController, animated: true)
+    }
+    
 //    func magazinesViewControllerDidPressAdd(_ viewController: MagazinesViewController) {
 //        let presenter = AddMagazinePresenter()
 //        let viewController = AddMagazineViewController(presenter: presenter, delegate: self)
